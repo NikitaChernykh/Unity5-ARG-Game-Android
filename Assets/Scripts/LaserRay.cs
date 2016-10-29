@@ -2,27 +2,27 @@
 using System.Collections;
 
 public class LaserRay : MonoBehaviour {
-	public GameObject rayOrigin;
+	public Transform cannonEnd;
+	public float weaponRange = 5;
+	public GameObject camera;
 	private LineRenderer laserLine;
+	//private LineRenderer laserLine;
 	//private bool aimActive = true;
 	void Start () {
 		laserLine = GetComponent<LineRenderer> ();
 	}
 
 	void Update () {
+		Vector3 rayOrigin = camera.GetComponent<Camera>().ViewportToWorldPoint (new Vector3 (0.5f, 0.5f, 0));
 		RaycastHit hit;
-		Vector3 fwd = transform.TransformDirection(Vector3.forward);
-		Ray cannonRay = new Ray (rayOrigin.transform.position,fwd);
-		Debug.DrawLine (rayOrigin.transform.position,fwd,Color.green);
-		laserLine.SetPosition (0, rayOrigin.transform.position);
-		//if (aimActive) {
-		if(Physics.Raycast (cannonRay, out hit, 50)){
-			Debug.Log ("casting ray");
+		laserLine.SetPosition (0, cannonEnd.position);
+		if (Physics.Raycast (rayOrigin, camera.transform.forward, out hit, weaponRange)) {
+			Debug.Log ("yyyy");
+			laserLine.SetPosition (1, hit.point);
+		} else {
+			laserLine.SetPosition (1, rayOrigin + (camera.transform.forward * weaponRange));
+		
 		}
-			//if(hit.collider.tag == "environment"){
-				//ActivateShooting();
-			//}
-		//}
 	
 	}
 }
